@@ -13,6 +13,17 @@ module Bundler
       raise e
     end
 
+    def self.check_old_versions!
+      $:.each do |path|
+        if path =~ %r'/bundler-0.(\d+)' && $1.to_i < 9
+          err = "Looks like you have a version of bundler that's older than 0.9.\n"
+          err << "Please remove your old versions.\n"
+          err << "An easy way to do this is by running `gem cleanup bundler`."
+          abort(err)
+        end
+      end
+    end
+
     def initialize(*)
       super
       Bundler.rubygems.ui = UI::RGProxy.new(Bundler.ui)
